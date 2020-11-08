@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://lookupman.cn/2020/11/08/hello-world/</loc>
+    <loc>https://lookupman.cn/2020/10/25/Golang%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA(io%E5%8C%85%E6%8E%A5%E5%8F%A3)/</loc>
     <lastmod>2020-11-08</lastmod>
+  </url>
+  <url>
+    <loc>https://lookupman.cn/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2020-11-08</lastmod>
+  </url>
+  <url>
+    <loc>https://lookupman.cn/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/</loc>
+    <lastmod>2020-11-08</lastmod>
+  </url>
+  <url>
+    <loc>https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2020-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://lookupman.cn/2020/06/08/C++%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7vcpkg%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    <lastmod>2020-06-08</lastmod>
+  </url>
+  <url>
+    <loc>https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</loc>
+    <lastmod>2020-06-07</lastmod>
   </url>
 </urlset> 

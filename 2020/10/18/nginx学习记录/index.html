@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>nginx学习记录 | 仰望的人</title>
+  <meta name="description" content="基础架构&amp;emsp;&amp;emsp; 1.请求流程 优点 高并发，高性能 可扩展性良好 高可靠性 热部署 BSD许可证  –32核64G，可支持千万并发 组成（1）Nginx二进制可执行文件（2）Nginx。conf配置文件（3）access.log访问日志（4）error.log错误日志 历史版本 第三方模块框架OpenResty 编译nginx 下载安装nginx 源码目录  目录说明① aut">
+<meta property="og:type" content="article">
+<meta property="og:title" content="nginx学习记录">
+<meta property="og:url" content="https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+<meta property="og:site_name" content="lookupman的博客">
+<meta property="og:description" content="基础架构&amp;emsp;&amp;emsp; 1.请求流程 优点 高并发，高性能 可扩展性良好 高可靠性 热部署 BSD许可证  –32核64G，可支持千万并发 组成（1）Nginx二进制可执行文件（2）Nginx。conf配置文件（3）access.log访问日志（4）error.log错误日志 历史版本 第三方模块框架OpenResty 编译nginx 下载安装nginx 源码目录  目录说明① aut">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/request_process.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_version.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_config.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_code_tree.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_configure.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/run_configure.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_target.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/make_install.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_quit.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot_flow.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_new.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_close_old.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_kill_woker.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_signal.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload_flow.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload_flow2.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_module.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_module_class.png">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_shared_memory.png">
+<meta property="article:published_time" content="2020-10-18T09:23:54.000Z">
+<meta property="article:modified_time" content="2020-10-18T09:23:54.000Z">
+<meta property="article:author" content="lookupman">
+<meta property="article:tag" content="成长">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx.png">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="lookupman的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body class="main-center" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/dream-kzx" target="_blank">
+          <img class="img-circle img-rotate" src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">仰望的人</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">愿你一生努力，永远被爱</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国杭州</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/dream-kzx" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">包管理工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/C/" style="font-size: 13px;">C++</a> <a href="/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">包管理工具</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 14px;">成长</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="title">gorm学习记录</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-11-08T08:29:08.000Z" itemprop="datePublished">2020-11-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/" class="title">ioutil一些方便的操作函数集</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-26T14:31:41.000Z" itemprop="datePublished">2020-10-26</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/25/Golang%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA(io%E5%8C%85%E6%8E%A5%E5%8F%A3)/" class="title">Golang基本输入输出(io包接口)</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-25T08:22:58.000Z" itemprop="datePublished">2020-10-25</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Nginx/">Nginx</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="title">nginx学习记录</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-18T09:23:54.000Z" itemprop="datePublished">2020-10-18</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/C/">C++</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/06/08/C++%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7vcpkg%E7%9A%84%E4%BD%BF%E7%94%A8/" class="title">C++包管理工具vcpkg的使用</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-06-08T10:39:40.000Z" itemprop="datePublished">2020-06-08</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E6%9E%B6%E6%9E%84"><span class="toc-number">1.</span> <span class="toc-text">基础架构</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%AF%B7%E6%B1%82%E6%B5%81%E7%A8%8B"><span class="toc-number">1.0.1.</span> <span class="toc-text">1.请求流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BC%98%E7%82%B9"><span class="toc-number">2.</span> <span class="toc-text">优点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%84%E6%88%90"><span class="toc-number">3.</span> <span class="toc-text">组成</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8E%86%E5%8F%B2%E7%89%88%E6%9C%AC"><span class="toc-number">4.</span> <span class="toc-text">历史版本</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E6%96%B9%E6%A8%A1%E5%9D%97%E6%A1%86%E6%9E%B6"><span class="toc-number">5.</span> <span class="toc-text">第三方模块框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BC%96%E8%AF%91nginx"><span class="toc-number">6.</span> <span class="toc-text">编译nginx</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85nginx"><span class="toc-number">7.</span> <span class="toc-text">下载安装nginx</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#nginx%E5%91%BD%E4%BB%A4%E8%A1%8C"><span class="toc-number">8.</span> <span class="toc-text">nginx命令行</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E9%9B%85%E5%85%B3%E9%97%AD"><span class="toc-number">8.1.</span> <span class="toc-text">优雅关闭</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%83%AD%E9%83%A8%E7%BD%B2"><span class="toc-number">8.2.</span> <span class="toc-text">热部署</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%89%88%E6%9C%AC%E5%9B%9E%E9%80%80"><span class="toc-number">8.3.</span> <span class="toc-text">版本回退</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A5%E5%BF%97%E5%88%87%E5%89%B2"><span class="toc-number">8.4.</span> <span class="toc-text">日志切割</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx%E4%BF%A1%E5%8F%B7"><span class="toc-number">9.</span> <span class="toc-text">Nginx信号</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#reload%E6%B5%81%E7%A8%8B"><span class="toc-number">10.</span> <span class="toc-text">reload流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Goaccess%E5%88%86%E6%9E%90%E6%97%A5%E5%BF%97"><span class="toc-number">11.</span> <span class="toc-text">使用Goaccess分析日志</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Nginx%E6%A8%A1%E5%9D%97%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">12.</span> <span class="toc-text">Nginx模块数据结构</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B1%E4%BA%AB%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%A8%A1%E5%9D%97"><span class="toc-number">13.</span> <span class="toc-text">共享内存使用模块</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%AB%A0"><span class="toc-number">14.</span> <span class="toc-text">参考文章</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-nginx学习记录" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      nginx学习记录
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="article-date">
+	  <time datetime="2020-10-18T09:23:54.000Z" itemprop="datePublished">2020-10-18</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Nginx/">Nginx</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a>
+  </span>
+
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.2k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 4(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <a id="more"></a>
+<h1 id="基础架构"><a href="#基础架构" class="headerlink" title="基础架构"></a>基础架构</h1><p>&emsp;&emsp;<img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx.png" alt="基础架构-w50"></p>
+<h3 id="1-请求流程"><a href="#1-请求流程" class="headerlink" title="1.请求流程"></a>1.请求流程</h3><p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/request_process.png" alt="请求流程"></p>
+<h1 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h1><ol>
+<li>高并发，高性能</li>
+<li>可扩展性良好</li>
+<li>高可靠性</li>
+<li>热部署</li>
+<li>BSD许可证</li>
+</ol>
+<p>–32核64G，可支持千万并发</p>
+<h1 id="组成"><a href="#组成" class="headerlink" title="组成"></a>组成</h1><p>（1）Nginx二进制可执行文件<br>（2）Nginx。conf配置文件<br>（3）access.log访问日志<br>（4）error.log错误日志</p>
+<h1 id="历史版本"><a href="#历史版本" class="headerlink" title="历史版本"></a>历史版本</h1><p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_version.png"></p>
+<h1 id="第三方模块框架"><a href="#第三方模块框架" class="headerlink" title="第三方模块框架"></a>第三方模块框架</h1><p>OpenResty</p>
+<h1 id="编译nginx"><a href="#编译nginx" class="headerlink" title="编译nginx"></a>编译nginx</h1><p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_config.png"></p>
+<h1 id="下载安装nginx"><a href="#下载安装nginx" class="headerlink" title="下载安装nginx"></a>下载安装nginx</h1><ol>
+<li><p>源码目录<br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_code_tree.png"></p>
+</li>
+<li><p>目录说明<br>① auto 用于编译，其中包含了四个主要目录，分别是cc(用于编译)、lib、os(对编译操作系统的判断)、types<br>② CHANGES: nginx的版本变化<br>③ CHANGES.ru: 俄罗斯版本<br>④ conf: 一些示例文件，nginx安装好后为了方便运维去配置，会把conf的示例文件拷贝到安装目录<br>⑤ configure: 该文件用于生成中间文件，执行编译前的必备动作<br>⑥ contrib: 提供2个perl脚本和vim的工具，改变配置nginx.conf的vim语法配色</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp -r contrib/vim/* ~/.vim/</span><br></pre></td></tr></table></figure>
+<p>⑦ man: nginx帮助文件<br>⑧ src: 源代码</p>
+</li>
+<li><p>编译</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure --help | more</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_configure.png"><br>&emsp;&emsp;如果不需要变动，编译时只需要指定–prefix参数即可，所有的文件会在prefix目录下建相应的文件夹<br>&emsp;&emsp;–with前缀的模块默认不加入编译<br>&emsp;&emsp;–without前缀的模块默认加入编译，执行该命令表示移除编译</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">//安装依赖</span><br><span class="line">//解决zlib error依赖错误</span><br><span class="line">sudo apt install zlib1g-dev</span><br><span class="line"></span><br><span class="line">//解决openssl error依赖错误</span><br><span class="line">sudo apt install openssl libssl-dev</span><br><span class="line"></span><br><span class="line">//解决pcre error依赖错误</span><br><span class="line">sudo apt install libpcre3 libpcre3-dev</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;执行configure，会生成中间文件在objs文件夹下，其中最重要的是ngx_modules.c，它决定了哪些模块将参与编译</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;configure --prefix &#x3D; ~&#x2F;home&#x2F;app&#x2F;nginx</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/run_configure.png"><br>&emsp;&emsp;接下来是执行make编译，目标文件在objs目录“nginx”，c编译的中间文件在src目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_target.png"><br>&emsp;&emsp;最后执行安装命令，安装在prefix执行的目录中</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make install</span><br></pre></td></tr></table></figure>
+<p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/make_install.png"></p>
+</li>
+</ol>
+<h1 id="nginx命令行"><a href="#nginx命令行" class="headerlink" title="nginx命令行"></a>nginx命令行</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;使用指定配置文件 -c</span><br><span class="line">&#x2F;&#x2F;使用配置指令 -g</span><br><span class="line">&#x2F;&#x2F;指定运行目录 -p</span><br><span class="line">&#x2F;&#x2F;发送信号 -s</span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;stop：立即停止服务    (kill -TERM)</span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;quit：优雅的停止服务  (kill -QUIT)</span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;reload：重载配置文件  (kill -SIGHUP)</span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;reopen：重新开始记录日志文件 (kill -USR1)</span><br><span class="line">&#x2F;&#x2F;测试配置文件是否有语法错误 -t -T</span><br><span class="line">&#x2F;&#x2F;打印nginx的版本信息、编译信息：-v -V</span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;修改配置后，直接nginx -s reload即可，会自动加载新的配置，在这个过程中，会重新启动一个worker进行，并将之前的worker进程优雅的退出</p>
+<h2 id="优雅关闭"><a href="#优雅关闭" class="headerlink" title="优雅关闭"></a>优雅关闭</h2><p>&emsp;&emsp;优雅的关闭只针对http协议层<br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_quit.png"></p>
+<h2 id="热部署"><a href="#热部署" class="headerlink" title="热部署"></a>热部署</h2><p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot_flow.png"><br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot2.png"></p>
+<ol>
+<li>部署最新版本的nginx，只需替换nginx二进制文件，首先用ps -ef | grep nginx，观察进程的状态。（注意在编译新版本的nginx时，不需要执行make install命令，否则会覆盖之前的配置文件）<br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_hot.png"></li>
+<li>然后将安装目录下sbin/nginx，修改为nginx.old<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv nginx nginx.old</span><br></pre></td></tr></table></figure></li>
+<li>然后将其他版本的nginx移到该目录下<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cp ..&#x2F;openresty&#x2F;nginx&#x2F;sbin&#x2F;nginx .&#x2F;</span><br></pre></td></tr></table></figure></li>
+<li>然后像nginx发送信号(kill -USR2 79637)，其会启动新版本nginx进程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -USR2 79637</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_new.png"></li>
+<li>然后向老的nginx进程发送一个信号(kill -WINCH 79637)，让其优雅的关闭work进程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -WINCH 79637</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_close_old.png"></li>
+<li>在这之后可以看到老版本的nginx的worker进程已经关闭，还剩下master进程，master进程是为了防止新部署的版本出现问题，可以做版本回退的作用<h2 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h2></li>
+<li>首先通过信号，kill -HUP 79637重新拉起旧版本的master进程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -HUP 79637</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload.png"></li>
+<li>然后像新版本的nginx，发送kill -WINCH 112586信号使其优雅的关闭worker进程<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -WINCH 112586</span><br></pre></td></tr></table></figure>
+<img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_kill_woker.png"></li>
+<li>最后关闭新版本的nginx master进程即可<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -9 112586</span><br></pre></td></tr></table></figure>
+<h2 id="日志切割"><a href="#日志切割" class="headerlink" title="日志切割"></a>日志切割</h2></li>
+<li>首先到log目录下，将之前日志转移到另一个文件<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mv access.log pre_access.log</span><br></pre></td></tr></table></figure></li>
+<li>然后在nginx目录下，执行reopen命令即可生成新的日志文件<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nginx -s reopen</span><br></pre></td></tr></table></figure>
+<h1 id="Nginx信号"><a href="#Nginx信号" class="headerlink" title="Nginx信号"></a>Nginx信号</h1><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_signal.png"><br>&emsp;&emsp;其中master进程会检测worker进程，当worker异常终止时，master进程会接收到一个CHLD信号。然后master进程会重新将worker进程拉起。<h1 id="reload流程"><a href="#reload流程" class="headerlink" title="reload流程"></a>reload流程</h1><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload_flow.png"><br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_reload_flow2.png"><br>（注意配置worker_shutdown_timeout）</li>
+</ol>
+<h1 id="使用Goaccess分析日志"><a href="#使用Goaccess分析日志" class="headerlink" title="使用Goaccess分析日志"></a>使用Goaccess分析日志</h1><ol>
+<li>使用apt安装goaccess<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install goaccess</span><br></pre></td></tr></table></figure>
+然后执行一下命令即可。-o 分析日志网页的生成路径，其余参数查看官网帮助文档，其中注意在nginx的日志格式变化的情况下，需要修改–log-foramt参数对应的值<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">goaccess pre_access.log -o ..&#x2F;html&#x2F;report.html --real-time-html --time-format&#x3D;&#39;%H:%M:%S&#39; --date-format&#x3D;&#39;%d&#x2F;%b&#x2F;%Y&#39; --log-format&#x3D;COMBINED</span><br></pre></td></tr></table></figure>
+<h1 id="Nginx模块数据结构"><a href="#Nginx模块数据结构" class="headerlink" title="Nginx模块数据结构"></a>Nginx模块数据结构</h1><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_module.png"><br>&emsp;&emsp;其中ngx_module_t中的type字段定义了nginx模块的类型<br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_module_class.png"></li>
+</ol>
+<h1 id="共享内存使用模块"><a href="#共享内存使用模块" class="headerlink" title="共享内存使用模块"></a>共享内存使用模块</h1><p><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/nginx_shared_memory.png"></p>
+<h1 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://time.geekbang.org/">极客时间Nginx核心知识100讲</a></li>
+</ol>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <!-- 
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="nginx学习记录" target="_blank" rel="external">https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</a>
+    </li>
+     -->
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/dream-kzx" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/dream-kzx" target="_blank"><span class="text-dark">仰望的人</span><small class="ml-1x">愿你一生努力，永远被爱</small></a></h3>
+        <div>技术分享,后端开发,C++,Golang。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    <li class="prev">
+      <a href="/2020/10/25/Golang%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA(io%E5%8C%85%E6%8E%A5%E5%8F%A3)/" title="Golang基本输入输出(io包接口)"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+    </li>
+    
+    
+    <li class="next">
+      <a href="/2020/06/08/C++%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7vcpkg%E7%9A%84%E4%BD%BF%E7%94%A8/" title="C++包管理工具vcpkg的使用"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/Alipay.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/wechat.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/dream-kzx" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div>
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'G4bx8emv5lMlJv3aYUD9IN1T-gzGzoHsz',
+    appKey: 'YDOIz7VT0BlhXVPP1nu0ie2X',
+    placeholder: '留下您的高见！',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>

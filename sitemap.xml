@@ -2,9 +2,177 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://lookupman.cn/2020/11/08/hello-world/</loc>
+    <loc>https://lookupman.cn/about/index.html</loc>
     
     <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/10/25/Golang%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA(io%E5%8C%85%E6%8E%A5%E5%8F%A3)/</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/links/index.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/tags/index.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/repository/index.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/categories/index.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/books/index.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/404.html</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/%E6%88%90%E9%95%BF/index.html</loc>
+    
+    <lastmod>2020-10-18</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/Nginx/index.html</loc>
+    
+    <lastmod>2020-10-18</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/10/18/nginx%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    
+    <lastmod>2020-10-18</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/06/08/C++%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7vcpkg%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2020-06-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/friend/index.html</loc>
+    
+    <lastmod>2020-06-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/index.html</loc>
+    
+    <lastmod>2020-06-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/C/index-1.html</loc>
+    
+    <lastmod>2020-06-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/C/index.html</loc>
+    
+    <lastmod>2020-06-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/self-talking/index.html</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/message/index.html</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/album/index.html</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/media/index.html</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/%E7%94%9F%E6%B4%BB/index.html</loc>
+    
+    <lastmod>2020-06-07</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/music/index.html</loc>
+    
+    <lastmod>2020-06-06</lastmod>
     
   </url>
   
@@ -17,6 +185,48 @@
   </url>
 
   
+  <url>
+    <loc>https://lookupman.cn/tags/C/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/tags/%E6%88%90%E9%95%BF/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
 
+  
+  <url>
+    <loc>https://lookupman.cn/categories/C/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/categories/%E7%94%9F%E6%B4%BB/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/categories/Nginx/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
   
 </urlset>
