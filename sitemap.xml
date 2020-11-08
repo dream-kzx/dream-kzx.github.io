@@ -2,7 +2,14 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://lookupman.cn/about/index.html</loc>
+    <loc>https://lookupman.cn/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    
+    <lastmod>2020-11-08</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/</loc>
     
     <lastmod>2020-11-08</lastmod>
     
@@ -16,14 +23,14 @@
   </url>
   
   <url>
-    <loc>https://lookupman.cn/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/</loc>
+    <loc>https://lookupman.cn/Golang/index.html</loc>
     
     <lastmod>2020-11-08</lastmod>
     
   </url>
   
   <url>
-    <loc>https://lookupman.cn/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/</loc>
+    <loc>https://lookupman.cn/about/index.html</loc>
     
     <lastmod>2020-11-08</lastmod>
     
@@ -224,6 +231,13 @@
   
   <url>
     <loc>https://lookupman.cn/categories/Nginx/</loc>
+    <lastmod>2020-11-08</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/categories/Golang/</loc>
     <lastmod>2020-11-08</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
