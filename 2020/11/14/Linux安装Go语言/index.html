@@ -17,21 +17,22 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>新的开始 | 仰望的人</title>
-  <meta name="description" content="要开始写博客了，不然很多东西，好久没用了就忘了">
+  <title>Linux安装Go语言 | 仰望的人</title>
+  <meta name="description" content="本章介绍在linux下安装go语言，以及一些环境变量的配置，本文的运行环境为ubuntu系统">
 <meta property="og:type" content="article">
-<meta property="og:title" content="新的开始">
-<meta property="og:url" content="https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/index.html">
+<meta property="og:title" content="Linux安装Go语言">
+<meta property="og:url" content="https://lookupman.cn/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/index.html">
 <meta property="og:site_name" content="lookupman的博客">
-<meta property="og:description" content="要开始写博客了，不然很多东西，好久没用了就忘了">
+<meta property="og:description" content="本章介绍在linux下安装go语言，以及一些环境变量的配置，本文的运行环境为ubuntu系统">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-06-07T03:07:59.000Z">
-<meta property="article:modified_time" content="2020-06-07T14:07:50.000Z">
+<meta property="og:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/Golang%E4%B8%8B%E8%BD%BD.png">
+<meta property="article:published_time" content="2020-11-14T08:16:40.000Z">
+<meta property="article:modified_time" content="2020-11-14T08:51:53.250Z">
 <meta property="article:author" content="lookupman">
-<meta property="article:tag" content="成长">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/Golang%E4%B8%8B%E8%BD%BD.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/index.html">
+  <link rel="canonical" href="https://lookupman.cn/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/index.html">
   
     <link rel="alternate" href="/atom.xml" title="lookupman的博客" type="application/atom+xml">
   
@@ -322,21 +323,21 @@
   <div class="slimContent">
     <nav id="toc" class="article-toc">
       <h3 class="toc-title">文章目录</h3>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A6%81%E5%BC%80%E5%A7%8B%E5%86%99%E5%8D%9A%E5%AE%A2%E4%BA%86%EF%BC%8C%E4%B8%8D%E7%84%B6%E5%BE%88%E5%A4%9A%E4%B8%9C%E8%A5%BF%EF%BC%8C%E5%A5%BD%E4%B9%85%E6%B2%A1%E7%94%A8%E4%BA%86%E5%B0%B1%E5%BF%98%E4%BA%86"><span class="toc-number">1.</span> <span class="toc-text">要开始写博客了，不然很多东西，好久没用了就忘了</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%B4%E6%98%8E"><span class="toc-number">1.</span> <span class="toc-text">说明</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96golang"><span class="toc-number">2.</span> <span class="toc-text">获取golang</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E7%BD%AE%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">设置环境变量</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E7%9A%84%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">环境变量的描述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E4%B8%80%E4%BA%9B%E5%B0%8F%E9%97%AE%E9%A2%98"><span class="toc-number">4.</span> <span class="toc-text">解决一些小问题</span></a></li></ol>
     </nav>
   </div>
 </aside>
 
 <main class="main" role="main">
   <div class="content">
-  <article id="post-新的开始" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-Linux安装Go语言" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      新的开始
+      Linux安装Go语言
     </h1>
   
 
@@ -344,22 +345,17 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/" class="article-date">
-	  <time datetime="2020-06-07T03:07:59.000Z" itemprop="datePublished">2020-06-07</time>
+	<a href="/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/" class="article-date">
+	  <time datetime="2020-11-14T08:16:40.000Z" itemprop="datePublished">2020-11-14</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a>
+    <a class="article-category-link" href="/categories/Golang/">Golang</a>
   </span>
 
         
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a>
-  </span>
-
 
         
 	<span class="article-read hidden-xs">
@@ -370,21 +366,42 @@
 	</span>
 
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/#comments" class="article-comment-link">评论</a></span>
         
 	
-		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 21(字)</span>
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 539(字)</span>
 	
 	
-		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 1(分)</span>
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 2(分)</span>
 	
 
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <a id="more"></a>
-<h2 id="要开始写博客了，不然很多东西，好久没用了就忘了"><a href="#要开始写博客了，不然很多东西，好久没用了就忘了" class="headerlink" title="要开始写博客了，不然很多东西，好久没用了就忘了"></a>要开始写博客了，不然很多东西，好久没用了就忘了</h2>
+        <p>本章介绍在linux下安装go语言，以及一些环境变量的配置，本文的运行环境为ubuntu系统</p>
+<a id="more"></a>
+<h1 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h1><p>在ubuntu中，可以直接使用apt-get命令来安装golang，但是由于apt源中的golang通常不是最新的，所以本章使用下载的二进制包进行安装golang。</p>
+<h1 id="获取golang"><a href="#获取golang" class="headerlink" title="获取golang"></a>获取golang</h1><p>进入<a target="_blank" rel="noopener" href="https://golang.org/">Golang官网</a>，点击Download Go，进入下载界面，选择Linux版本tar.gz文件，右键选择复制链接地址。<br><img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/Golang%E4%B8%8B%E8%BD%BD.png"></p>
+<p>进入ubuntu的bash界面，输入命令，下载文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://golang.org/dl/go1.15.5.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+<p>第二步解压缩包</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf go1.15.5.linux-amd64.tar.gz</span><br></pre></td></tr></table></figure>
+
+<h1 id="设置环境变量"><a href="#设置环境变量" class="headerlink" title="设置环境变量"></a>设置环境变量</h1><p>对于解压后的压缩包，设置相应的环境变量之后即可运行Golang，环境变量设置如下.</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">//进入根目录</span><br><span class="line">&gt; <span class="built_in">cd</span> ~/</span><br><span class="line"></span><br><span class="line">//编辑.bashrc文件</span><br><span class="line">&gt; sudo vim .bashrc</span><br><span class="line"></span><br><span class="line">//在文件最下面，设置Golang相关环境变量</span><br><span class="line"><span class="built_in">export</span> GOPROXY=https://goproxy.cn,direct</span><br><span class="line"><span class="built_in">export</span> GO111MODULE=on</span><br><span class="line"><span class="built_in">export</span> GOROOT= <span class="string">&quot;解压压缩包路径&quot;</span></span><br><span class="line"><span class="built_in">export</span> GOPATH= <span class="string">&quot;自定义路径，用于保存一些第三方包&quot;</span></span><br><span class="line">PATH=<span class="variable">$GOROOT</span>/bin:<span class="variable">$GOPATH</span>/bin:<span class="variable">$PATH</span></span><br><span class="line"></span><br><span class="line">//保存.bashrc文件，执行如下命令即可</span><br><span class="line"><span class="built_in">source</span> ./bashrc</span><br><span class="line"></span><br><span class="line">//测试是否配置成功</span><br><span class="line">&gt; go version</span><br><span class="line">go version go1.15.5 linux/amd64</span><br></pre></td></tr></table></figure>
+
+<h2 id="环境变量的描述"><a href="#环境变量的描述" class="headerlink" title="环境变量的描述"></a>环境变量的描述</h2><ul>
+<li>GOPROXY: 由于国内的网络访问外网较慢，所以在下载第三方包，会出现超时的情况，所以国内大佬们搭建了库的镜像，该配置就是为了配置代理。</li>
+<li>GO111MODULE: 启用go module，go module是在go1.11版本加入的，一种包管理的工具</li>
+<li>GOROOT: 这个就不解释了</li>
+<li>GOPATH: 第三方包下载保存的路径，包括了go module管理包的路径</li>
+</ul>
+<h1 id="解决一些小问题"><a href="#解决一些小问题" class="headerlink" title="解决一些小问题"></a>解决一些小问题</h1><p>在需要使用sudo命令进行编译运行golang时，已设置的环境变量会被置为默认，比如gopath路径被改变，程序所需要依赖的包在编译时就需要重新下载。可以通过如下配置进行设置，在sudo的情况下环境变量不被清空。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//进入如下文件</span><br><span class="line">&gt; sudo visudo /etc/sudoers</span><br><span class="line"></span><br><span class="line">//添加如下命令即可</span><br><span class="line">Defaults !env_reset</span><br></pre></td></tr></table></figure>
+
+<p>参考文章:</p>
+
       
     </div>
     <div class="article-footer">
@@ -393,7 +410,7 @@
     <!-- 
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/" title="新的开始" target="_blank" rel="external">https://lookupman.cn/2020/06/07/%E6%96%B0%E7%9A%84%E5%BC%80%E5%A7%8B/</a>
+      <a href="https://lookupman.cn/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/" title="Linux安装Go语言" target="_blank" rel="external">https://lookupman.cn/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/</a>
     </li>
      -->
     <li class="post-copyright-license">
@@ -439,10 +456,10 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2020/06/08/C++%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7vcpkg%E7%9A%84%E4%BD%BF%E7%94%A8/" title="C++包管理工具vcpkg的使用"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
     
+    <li class="next">
+      <a href="/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" title="gorm学习记录"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
     
     
     <li class="toggle-toc">
