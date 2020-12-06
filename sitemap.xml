@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lookupman.cn/2020/12/06/go-kit-etcdv3%E5%BA%93%E5%AD%A6%E4%B9%A0/</loc>
+    
+    <lastmod>2020-12-06</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://lookupman.cn/2020/10/25/Golang%E5%9F%BA%E6%9C%AC%E8%BE%93%E5%85%A5%E8%BE%93%E5%87%BA(io%E5%8C%85%E6%8E%A5%E5%8F%A3)/</loc>
     
     <lastmod>2020-11-28</lastmod>
@@ -193,7 +200,7 @@
 
   <url>
     <loc>https://lookupman.cn/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -201,21 +208,21 @@
   
   <url>
     <loc>https://lookupman.cn/tags/C/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/tags/%E6%88%90%E9%95%BF/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -224,28 +231,28 @@
   
   <url>
     <loc>https://lookupman.cn/categories/C/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/%E7%94%9F%E6%B4%BB/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/Nginx/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/Golang/</loc>
-    <lastmod>2020-11-28</lastmod>
+    <lastmod>2020-12-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
