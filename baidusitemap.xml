@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/</loc>
+    <lastmod>2021-01-03</lastmod>
+  </url>
+  <url>
     <loc>https://lookupman.cn/2020/12/06/go-kit-etcdv3%E5%BA%93%E5%AD%A6%E4%B9%A0/</loc>
     <lastmod>2020-12-06</lastmod>
   </url>

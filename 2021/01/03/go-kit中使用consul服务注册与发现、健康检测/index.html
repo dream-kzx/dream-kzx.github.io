@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang=zh>
+<head>
+  <meta charset="utf-8">
+  
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="Cache-Control" content="no-transform" />
+  <meta http-equiv="Cache-Control" content="no-siteapp" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="format-detection" content="telephone=no,email=no,adress=no">
+  <!-- Color theme for statusbar -->
+  <meta name="theme-color" content="#000000" />
+  <!-- 强制页面在当前窗口以独立页面显示,防止别人在框架里调用页面 -->
+  <meta http-equiv="window-target" content="_top" />
+  
+  
+  <title>go-kit中使用consul服务注册与发现、健康检测 | 仰望的人</title>
+  <meta name="description" content="&amp;emsp;&amp;emsp;本章介绍在go-kit中进行使用服务发现和注册，以及健康检测">
+<meta property="og:type" content="article">
+<meta property="og:title" content="go-kit中使用consul服务注册与发现、健康检测">
+<meta property="og:url" content="https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/index.html">
+<meta property="og:site_name" content="lookupman的博客">
+<meta property="og:description" content="&amp;emsp;&amp;emsp;本章介绍在go-kit中进行使用服务发现和注册，以及健康检测">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-03T07:50:42.000Z">
+<meta property="article:modified_time" content="2021-01-03T08:35:02.724Z">
+<meta property="article:author" content="lookupman">
+<meta name="twitter:card" content="summary">
+  <!-- Canonical links -->
+  <link rel="canonical" href="https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/index.html">
+  
+    <link rel="alternate" href="/atom.xml" title="lookupman的博客" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/favicon.png" type="image/x-icon">
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+  
+  
+  
+<meta name="generator" content="Hexo 5.2.0"></head>
+
+
+<body class="main-center theme-black" itemscope itemtype="http://schema.org/WebPage">
+  <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+  <div class="slimContent">
+    <div class="navbar-header">
+      
+      
+      <div class="profile-block text-center">
+        <a id="avatar" href="https://github.com/dream-kzx" target="_blank">
+          <img class="img-circle img-rotate" src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/avatar.jpg" width="200" height="200">
+        </a>
+        <h2 id="name" class="hidden-xs hidden-sm">仰望的人</h2>
+        <h3 id="title" class="hidden-xs hidden-sm hidden-md">愿你一生努力，永远被爱</h3>
+        <small id="location" class="text-muted hidden-xs hidden-sm"><i class="icon icon-map-marker"></i> 中国杭州</small>
+      </div>
+      
+      <div class="search" id="search-form-wrap">
+
+    <form class="search-form sidebar-form">
+        <div class="input-group">
+            <input type="text" class="search-form-input form-control" placeholder="搜索" />
+            <span class="input-group-btn">
+                <button type="submit" class="search-form-submit btn btn-flat" onclick="return false;"><i class="icon icon-search"></i></button>
+            </span>
+        </div>
+    </form>
+    <div class="ins-search">
+  <div class="ins-search-mask"></div>
+  <div class="ins-search-container">
+    <div class="ins-input-wrapper">
+      <input type="text" class="ins-search-input" placeholder="想要查找什么..." x-webkit-speech />
+      <button type="button" class="close ins-close ins-selectable" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </div>
+    <div class="ins-section-wrapper">
+      <div class="ins-section-container"></div>
+    </div>
+  </div>
+</div>
+
+
+</div>
+      <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target="#main-navbar" aria-controls="main-navbar" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+    </div>
+    <nav id="main-navbar" class="collapse navbar-collapse" itemscope itemtype="http://schema.org/SiteNavigationElement" role="navigation">
+      <ul class="nav navbar-nav main-nav menu-highlight">
+        
+        
+        <li class="menu-item menu-item-home">
+          <a href="/.">
+            
+            <i class="icon icon-home-fill"></i>
+            
+            <span class="menu-title">首页</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives">
+            
+            <i class="icon icon-archives-fill"></i>
+            
+            <span class="menu-title">归档</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories">
+            
+            <i class="icon icon-folder"></i>
+            
+            <span class="menu-title">分类</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags">
+            
+            <i class="icon icon-tags"></i>
+            
+            <span class="menu-title">标签</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-links">
+          <a href="/links">
+            
+            <i class="icon icon-friendship"></i>
+            
+            <span class="menu-title">友链</span>
+          </a>
+        </li>
+        
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about">
+            
+            <i class="icon icon-cup-fill"></i>
+            
+            <span class="menu-title">关于</span>
+          </a>
+        </li>
+        
+      </ul>
+      
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/dream-kzx" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    </nav>
+  </div>
+</header>
+
+  
+    <aside class="sidebar" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    
+      <div class="widget">
+    <h3 class="widget-title">公告</h3>
+    <div class="widget-body">
+        <div id="board">
+            <div class="content">
+                <p>欢迎交流与分享经验!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget-body">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/C/">C++</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Golang/">Golang</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Nginx/">Nginx</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%94%9F%E6%B4%BB/">生活</a><span class="category-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget-body">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/" rel="tag">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" rel="tag">包管理工具</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E6%88%90%E9%95%BF/" rel="tag">成长</a><span class="tag-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget-body tagcloud">
+      <a href="/tags/C/" style="font-size: 13px;">C++</a> <a href="/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/" style="font-size: 13px;">包管理工具</a> <a href="/tags/%E6%88%90%E9%95%BF/" style="font-size: 14px;">成长</a>
+    </div>
+  </div>
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget-body">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/01/">一月 2021</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/12/">十二月 2020</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/11/">十一月 2020</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/10/">十月 2020</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/06/">六月 2020</a><span class="archive-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+    
+      
+  <div class="widget">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget-body">
+      <ul class="recent-post-list list-unstyled no-thumbnail">
+        
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Golang/">Golang</a>
+              </p>
+              <p class="item-title">
+                <a href="/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/" class="title">go-kit中使用consul服务注册与发现、健康检测</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2021-01-03T07:50:42.000Z" itemprop="datePublished">2021-01-03</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Golang/">Golang</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/12/06/go-kit-etcdv3%E5%BA%93%E5%AD%A6%E4%B9%A0/" class="title">go-kit/etcdv3库学习</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-12-06T12:08:01.000Z" itemprop="datePublished">2020-12-06</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Golang/">Golang</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/11/14/Linux%E5%AE%89%E8%A3%85Go%E8%AF%AD%E8%A8%80/" class="title">Linux安装Go语言</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-11-14T08:16:40.000Z" itemprop="datePublished">2020-11-14</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Golang/">Golang</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/11/08/gorm%E5%AD%A6%E4%B9%A0%E8%AE%B0%E5%BD%95/" class="title">gorm学习记录</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-11-08T08:29:08.000Z" itemprop="datePublished">2020-11-08</time>
+              </p>
+            </div>
+          </li>
+          
+          <li>
+            
+            <div class="item-inner">
+              <p class="item-category">
+                <a class="category-link" href="/categories/Golang/">Golang</a>
+              </p>
+              <p class="item-title">
+                <a href="/2020/10/26/ioutil%E4%B8%80%E4%BA%9B%E6%96%B9%E4%BE%BF%E7%9A%84%E6%93%8D%E4%BD%9C%E5%87%BD%E6%95%B0%E9%9B%86/" class="title">ioutil一些方便的操作函数集</a>
+              </p>
+              <p class="item-date">
+                <time datetime="2020-10-26T14:31:41.000Z" itemprop="datePublished">2020-10-26</time>
+              </p>
+            </div>
+          </li>
+          
+      </ul>
+    </div>
+  </div>
+  
+
+    
+  </div>
+</aside>
+
+  
+  
+<aside class="sidebar sidebar-toc collapse" id="collapseToc" itemscope itemtype="http://schema.org/WPSideBar">
+  <div class="slimContent">
+    <nav id="toc" class="article-toc">
+      <h3 class="toc-title">文章目录</h3>
+      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%A6%96%E5%85%88%E4%BD%BF%E7%94%A8kit%E6%8F%90%E4%BE%9B%E7%9A%84%E5%BA%93%EF%BC%8C%E5%AE%9A%E4%B9%89%E5%AF%B9consul%E7%9A%84%E8%AE%BF%E9%97%AE"><span class="toc-number">1.</span> <span class="toc-text">首先使用kit提供的库，定义对consul的访问</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1"><span class="toc-number">2.</span> <span class="toc-text">定义服务</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E6%9C%8D%E5%8A%A1%E7%AB%AF%E7%82%B9%EF%BC%88Endpoint%EF%BC%89"><span class="toc-number">3.</span> <span class="toc-text">定义服务端点（Endpoint）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89http%E5%B1%82handler"><span class="toc-number">4.</span> <span class="toc-text">定义http层handler</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%BB%E5%87%BD%E6%95%B0"><span class="toc-number">5.</span> <span class="toc-text">主函数</span></a></li></ol>
+    </nav>
+  </div>
+</aside>
+
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-go-kit中使用consul服务注册与发现、健康检测" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
+  
+    <h1 class="article-title" itemprop="name">
+      go-kit中使用consul服务注册与发现、健康检测
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/" class="article-date">
+	  <time datetime="2021-01-03T07:50:42.000Z" itemprop="datePublished">2021-01-03</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/Golang/">Golang</a>
+  </span>
+
+        
+
+        
+	<span class="article-read hidden-xs">
+	    <i class="icon icon-eye-fill" aria-hidden="true"></i>
+	    <span id="busuanzi_container_page_pv">
+			<span id="busuanzi_value_page_pv">0</span>
+		</span>
+	</span>
+
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/#comments" class="article-comment-link">评论</a></span>
+        
+	
+		<span class="post-wordcount hidden-xs" itemprop="wordCount">字数统计: 1.8k(字)</span>
+	
+	
+		<span class="post-readcount hidden-xs" itemprop="timeRequired">阅读时长: 10(分)</span>
+	
+
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>&emsp;&emsp;本章介绍在go-kit中进行使用服务发现和注册，以及健康检测</p>
+<a id="more"></a>
+<h1 id="首先使用kit提供的库，定义对consul的访问"><a href="#首先使用kit提供的库，定义对consul的访问" class="headerlink" title="首先使用kit提供的库，定义对consul的访问"></a>首先使用kit提供的库，定义对consul的访问</h1><p>&emsp;&emsp;首先定义服务发现的客户端接口，接口需要提供3个方法，服务注册、服务注销以及服务发现。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> discovery</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">&quot;log&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DiscoverClient <span class="keyword">interface</span>&#123;</span><br><span class="line">    Register(serviceName, instanceId, healthCheckUrl <span class="keyword">string</span>,</span><br><span class="line">        instanceHost <span class="keyword">string</span>, instancePort <span class="keyword">int</span>, meta <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>, logger *log.Logger) <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">    DeRegister(instanceId <span class="keyword">string</span>, logger *log.Logger) <span class="keyword">bool</span></span><br><span class="line"></span><br><span class="line">    DiscoveryServices(serviceName <span class="keyword">string</span>, logger *log.Logger) []<span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;然后定义对接口的实现，在此处使用go-kit封装的库对接口进行实现，同时在服务发现部分通过map对服务进行缓存，在服务发生变化时，通过获取consul的通知进行更新map</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> discovery</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;github.com/go-kit/kit/sd/consul&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/hashicorp/consul/api&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/hashicorp/consul/api/watch&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;strconv&quot;</span></span><br><span class="line">	<span class="string">&quot;sync&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> KitDiscoverClient <span class="keyword">struct</span> &#123;</span><br><span class="line">	consulHost  <span class="keyword">string</span>          <span class="comment">//consul的地址</span></span><br><span class="line">	consulPort  <span class="keyword">int</span>             <span class="comment">//consul的端口</span></span><br><span class="line">	client      consul.Client   <span class="comment">//kit封装consul的客户端</span></span><br><span class="line">	config      *api.Config     <span class="comment">//kit封装的consul配置</span></span><br><span class="line">	mutex       sync.Mutex</span><br><span class="line">	instanceMap sync.Map</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewKitDiscoverClient</span><span class="params">(consulHost <span class="keyword">string</span>, consulPort <span class="keyword">int</span>)</span> <span class="params">(DiscoverClient, error)</span></span> &#123;</span><br><span class="line">	consulConfig := api.DefaultConfig()</span><br><span class="line">	consulConfig.Address = consulHost + <span class="string">&quot;:&quot;</span> + strconv.Itoa(consulPort)</span><br><span class="line">	apiClient, err := api.NewClient(consulConfig)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">	&#125;</span><br><span class="line">	client := consul.NewClient(apiClient)</span><br><span class="line">	<span class="keyword">return</span> &amp;KitDiscoverClient&#123;</span><br><span class="line">		consulHost: consulHost,</span><br><span class="line">		consulPort: consulPort,</span><br><span class="line">		client:     client,</span><br><span class="line">		config:     consulConfig,</span><br><span class="line">	&#125;, <span class="literal">nil</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(consulClient *KitDiscoverClient)</span> <span class="title">Register</span><span class="params">(serviceName, instanceId, healthCheckUrl <span class="keyword">string</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">	instanceHost <span class="keyword">string</span>, instancePort <span class="keyword">int</span>, meta <span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">string</span>, logger *log.Logger)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	serviceRegistration := &amp;api.AgentServiceRegistration&#123;</span><br><span class="line">		ID:      instanceId,</span><br><span class="line">		Name:    serviceName,</span><br><span class="line">		Address: instanceHost,</span><br><span class="line">		Port:    instancePort,</span><br><span class="line">		Meta:    meta,</span><br><span class="line">		Check: &amp;api.AgentServiceCheck&#123;</span><br><span class="line">			DeregisterCriticalServiceAfter: <span class="string">&quot;30s&quot;</span>,</span><br><span class="line">			HTTP:                           <span class="string">&quot;http://&quot;</span> + instanceHost + <span class="string">&quot;:&quot;</span> + strconv.Itoa(instancePort) + healthCheckUrl,</span><br><span class="line">			Interval:                       <span class="string">&quot;15s&quot;</span>,</span><br><span class="line">		&#125;,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	err := consulClient.client.Register(serviceRegistration)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;Register Service Error!&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line">	log.Println(<span class="string">&quot;Register Service Success!&quot;</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(consulClient *KitDiscoverClient)</span> <span class="title">DeRegister</span><span class="params">(instanceId <span class="keyword">string</span>, logger *log.Logger)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">	serviceRegistration := &amp;api.AgentServiceRegistration&#123;</span><br><span class="line">		ID: instanceId,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	err := consulClient.client.Deregister(serviceRegistration)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		logger.Println(<span class="string">&quot;Deregister Service Error!&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">false</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	log.Println(<span class="string">&quot;Deregister Service Success!&quot;</span>)</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(consulClient *KitDiscoverClient)</span> <span class="title">DiscoveryServices</span><span class="params">(serviceName <span class="keyword">string</span>, logger *log.Logger)</span> []<span class="title">interface</span></span>&#123;&#125; &#123;</span><br><span class="line">    <span class="comment">//判断服务是否已缓存</span></span><br><span class="line">	instanceList, ok := consulClient.instanceMap.Load(serviceName)</span><br><span class="line">	<span class="keyword">if</span> ok &#123;</span><br><span class="line">		<span class="keyword">return</span> instanceList.([]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    consulClient.mutex.Lock()</span><br><span class="line">    <span class="keyword">defer</span> consulClient.mutex.Unlock()</span><br><span class="line">    <span class="comment">//加锁后在判断一次，服务是否已缓存</span></span><br><span class="line">	instanceList, ok = consulClient.instanceMap.Load(serviceName)</span><br><span class="line">	<span class="keyword">if</span> ok &#123;</span><br><span class="line">		<span class="keyword">return</span> instanceList.([]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//响应服务变更通知，更新服务map</span></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		params := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;)</span><br><span class="line">		params[<span class="string">&quot;type&quot;</span>] = <span class="string">&quot;service&quot;</span></span><br><span class="line">		params[<span class="string">&quot;service&quot;</span>] = serviceName</span><br><span class="line">		plan, _ := watch.Parse(params)</span><br><span class="line">		plan.Handler = <span class="function"><span class="keyword">func</span><span class="params">(u <span class="keyword">uint64</span>, i <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">			<span class="keyword">if</span> i == <span class="literal">nil</span> &#123;</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			v, ok := i.([]*api.ServiceEntry)</span><br><span class="line">			<span class="keyword">if</span> !ok &#123;</span><br><span class="line">				<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">if</span> <span class="built_in">len</span>(v) == <span class="number">0</span> &#123;</span><br><span class="line">				consulClient.instanceMap.Store(serviceName, []<span class="keyword">interface</span>&#123;&#125;&#123;&#125;)</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			<span class="keyword">var</span> healthServices []<span class="keyword">interface</span>&#123;&#125;</span><br><span class="line">			<span class="keyword">for</span> _, service := <span class="keyword">range</span> v &#123;</span><br><span class="line">				<span class="keyword">if</span> service.Checks.AggregatedStatus() == api.HealthPassing &#123;</span><br><span class="line">					healthServices = <span class="built_in">append</span>(healthServices, service)</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">			consulClient.instanceMap.Store(serviceName, healthServices)</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">defer</span> plan.Stop()</span><br><span class="line">		plan.Run(consulClient.config.Address)</span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">    <span class="comment">//调用go-kit库向consul获取服务</span></span><br><span class="line">	entries, _, err := consulClient.client.Service(serviceName, <span class="string">&quot;&quot;</span>, <span class="literal">false</span>, <span class="literal">nil</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		consulClient.instanceMap.Store(serviceName, []<span class="keyword">interface</span>&#123;&#125;&#123;&#125;)</span><br><span class="line">		logger.Println(<span class="string">&quot;Discover Service Error&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	instances := <span class="built_in">make</span>([]<span class="keyword">interface</span>&#123;&#125;, <span class="number">0</span>, <span class="built_in">len</span>(entries))</span><br><span class="line">	<span class="keyword">for</span> _, instance := <span class="keyword">range</span> entries &#123;</span><br><span class="line">		instances = <span class="built_in">append</span>(instances, instance)</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	consulClient.instanceMap.Store(serviceName, instances)</span><br><span class="line">	<span class="keyword">return</span> instances</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="定义服务"><a href="#定义服务" class="headerlink" title="定义服务"></a>定义服务</h1><p>&emsp;&emsp;定义服务，本文实例定义两个服务：SayHello和HealthCheck。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> service</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">&quot;context&quot;</span></span><br><span class="line">    <span class="string">&quot;errors&quot;</span></span><br><span class="line">    <span class="string">&quot;github.com/lookupman/service_discovery/config&quot;</span></span><br><span class="line">    <span class="string">&quot;github.com/lookupman/service_discovery/discovery&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义服务接口</span></span><br><span class="line"><span class="keyword">type</span> Service <span class="keyword">interface</span> &#123;</span><br><span class="line">    HealthCheck() <span class="keyword">bool</span></span><br><span class="line">    SayHello() <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现SayHello服务接口</span></span><br><span class="line"><span class="keyword">type</span> DiscoveryServiceImpl <span class="keyword">struct</span> &#123;</span><br><span class="line">    discoveryClient discovery.DiscoverClient</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewDiscoveryServiceImpl</span><span class="params">(discoveryClient discovery.DiscoverClient)</span> <span class="title">Service</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> &amp;DiscoveryServiceImpl&#123;discoveryClient: discoveryClient&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(service *DiscoveryServiceImpl)</span> <span class="title">HealthCheck</span><span class="params">()</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(service DiscoveryServiceImpl)</span> <span class="title">SayHello</span><span class="params">()</span> <span class="title">string</span></span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Hello World!&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="定义服务端点（Endpoint）"><a href="#定义服务端点（Endpoint）" class="headerlink" title="定义服务端点（Endpoint）"></a>定义服务端点（Endpoint）</h1><p>&emsp;&emsp;endpoint是go-kit定义的一个函数类型，定义返回这个类型的函数，传给NewServer作为参数实现对http handler的注册，另外需要定义request解码和response编码的函数。</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">type</span> Endpoint <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, request <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(response <span class="keyword">interface</span>&#123;&#125;, err error)</span></span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> endpoint</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/go-kit/kit/endpoint&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/service&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DiscoveryEndpoints <span class="keyword">struct</span> &#123;</span><br><span class="line">	SayHelloEndpoint    endpoint.Endpoint</span><br><span class="line">	DiscoveryEndpoint   endpoint.Endpoint</span><br><span class="line">	HealthCheckEndpoint endpoint.Endpoint</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> SayHelloRequest <span class="keyword">struct</span> &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> SayHelloResponse <span class="keyword">struct</span> &#123;</span><br><span class="line">	Message <span class="keyword">string</span> <span class="string">`json:&quot;message&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeSayHelloEndpoint</span><span class="params">(svc service.Service)</span> <span class="title">endpoint</span>.<span class="title">Endpoint</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, request <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(response <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">		message := svc.SayHello()</span><br><span class="line"></span><br><span class="line">		<span class="keyword">return</span> SayHelloResponse&#123;Message: message&#125;, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DiscoveryRequest <span class="keyword">struct</span> &#123;</span><br><span class="line">	ServiceName <span class="keyword">string</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> DiscoveryResponse <span class="keyword">struct</span> &#123;</span><br><span class="line">	Instances []<span class="keyword">interface</span>&#123;&#125; <span class="string">`json:&quot;instances&quot;`</span></span><br><span class="line">	Error     <span class="keyword">string</span>        <span class="string">`json:&quot;error&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeDiscoveryEndpoint</span><span class="params">(svc service.Service)</span> <span class="title">endpoint</span>.<span class="title">Endpoint</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, request <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(response <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">		req := request.(DiscoveryRequest)</span><br><span class="line"></span><br><span class="line">		instances, err := svc.DiscoveryService(ctx, req.ServiceName)</span><br><span class="line">		<span class="keyword">var</span> errString <span class="keyword">string</span></span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			errString = err.Error()</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> DiscoveryResponse&#123;</span><br><span class="line">			Instances: instances,</span><br><span class="line">			Error:     errString,</span><br><span class="line">		&#125;, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> HealthRequest <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> HealthResponse <span class="keyword">struct</span> &#123;</span><br><span class="line">	Status <span class="keyword">bool</span> <span class="string">`json:&quot;status&quot;`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeHealthCheckEndpoint</span><span class="params">(svc service.Service)</span> <span class="title">endpoint</span>.<span class="title">Endpoint</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="function"><span class="keyword">func</span><span class="params">(ctx context.Context, request <span class="keyword">interface</span>&#123;&#125;)</span> <span class="params">(response <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">		status := svc.HealthCheck()</span><br><span class="line">		<span class="keyword">return</span> HealthResponse&#123;Status: status&#125;, <span class="literal">nil</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="定义http层handler"><a href="#定义http层handler" class="headerlink" title="定义http层handler"></a>定义http层handler</h1><p>&emsp;&emsp;在这里做的是，使用go-kit的库实现对endpoint、编解码函数封装，实现http的handler</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> transport</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;encoding/json&quot;</span></span><br><span class="line">	<span class="string">&quot;errors&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line"></span><br><span class="line">	<span class="string">&quot;github.com/go-kit/kit/log&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/go-kit/kit/transport&quot;</span></span><br><span class="line">	kithttp <span class="string">&quot;github.com/go-kit/kit/transport/http&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/gorilla/mux&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/endpoint&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> (</span><br><span class="line">	ErrorRequest = errors.New(<span class="string">&quot;invalid request parameter&quot;</span>)</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MakeHttpHandler</span><span class="params">(ctx context.Context, endpoints endpoint.DiscoveryEndpoints, logger log.Logger)</span> <span class="title">http</span>.<span class="title">Handler</span></span> &#123;</span><br><span class="line">	r := mux.NewRouter()</span><br><span class="line"></span><br><span class="line">	options := []kithttp.ServerOption&#123;</span><br><span class="line">		kithttp.ServerErrorHandler(transport.NewLogErrorHandler(logger)),</span><br><span class="line">		kithttp.ServerErrorEncoder(encodeError),</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	r.Methods(<span class="string">&quot;GET&quot;</span>).Path(<span class="string">&quot;/SayHello&quot;</span>).Handler(kithttp.NewServer(</span><br><span class="line">		endpoints.SayHelloEndpoint,</span><br><span class="line">		decodeSayHelloRequest,</span><br><span class="line">		encodeJsonResponse,</span><br><span class="line">		options...,</span><br><span class="line">	))</span><br><span class="line"></span><br><span class="line">	r.Methods(<span class="string">&quot;GET&quot;</span>).Path(<span class="string">&quot;/discovery&quot;</span>).Handler(kithttp.NewServer(</span><br><span class="line">		endpoints.DiscoveryEndpoint,</span><br><span class="line">		decodeDiscoveryRequest,</span><br><span class="line">		encodeJsonResponse,</span><br><span class="line">		options...,</span><br><span class="line">	))</span><br><span class="line"></span><br><span class="line">	r.Methods(<span class="string">&quot;GET&quot;</span>).Path(<span class="string">&quot;/health&quot;</span>).Handler(kithttp.NewServer(</span><br><span class="line">		endpoints.HealthCheckEndpoint,</span><br><span class="line">		decodeHealthRequest,</span><br><span class="line">		encodeJsonResponse,</span><br><span class="line">		options...,</span><br><span class="line">	))</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> r</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">decodeSayHelloRequest</span><span class="params">(ctx context.Context, req *http.Request)</span> <span class="params">(request <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> endpoint.SayHelloRequest&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">decodeDiscoveryRequest</span><span class="params">(ctx context.Context, req *http.Request)</span> <span class="params">(request <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">	serviceName := req.URL.Query().Get(<span class="string">&quot;serviceName&quot;</span>)</span><br><span class="line">	<span class="keyword">if</span> serviceName == <span class="string">&quot;&quot;</span> &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">nil</span>, ErrorRequest</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> endpoint.DiscoveryRequest&#123;ServiceName: serviceName&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">decodeHealthRequest</span><span class="params">(ctx context.Context, req *http.Request)</span> <span class="params">(request <span class="keyword">interface</span>&#123;&#125;, err error)</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> endpoint.HealthRequest&#123;&#125;, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">encodeJsonResponse</span><span class="params">(ctx context.Context, w http.ResponseWriter, response <span class="keyword">interface</span>&#123;&#125;)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json;charset=utf-8&quot;</span>)</span><br><span class="line">	<span class="keyword">return</span> json.NewEncoder(w).Encode(response)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">encodeError</span><span class="params">(ctx context.Context, err error, w http.ResponseWriter)</span></span> &#123;</span><br><span class="line">	w.Header().Set(<span class="string">&quot;Content-Type&quot;</span>, <span class="string">&quot;application/json;charset=utf-8&quot;</span>)</span><br><span class="line">	<span class="keyword">switch</span> err &#123;</span><br><span class="line">	<span class="keyword">default</span>:</span><br><span class="line">		w.WriteHeader(http.StatusInternalServerError)</span><br><span class="line">	&#125;</span><br><span class="line">	json.NewEncoder(w).Encode(<span class="keyword">map</span>[<span class="keyword">string</span>]<span class="keyword">interface</span>&#123;&#125;&#123;</span><br><span class="line">		<span class="string">&quot;error&quot;</span>: err.Error(),</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="主函数"><a href="#主函数" class="headerlink" title="主函数"></a>主函数</h1><p>&emsp;&emsp;最后是主函数，在这里绑定监听端口以及将服务注册到consul</p>
+<figure class="highlight golang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">&quot;context&quot;</span></span><br><span class="line">	<span class="string">&quot;fmt&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/config&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/discovery&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/endpoint&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/service&quot;</span></span><br><span class="line">	<span class="string">&quot;github.com/lookupman/service_discovery/transport&quot;</span></span><br><span class="line">	uuid <span class="string">&quot;github.com/satori/go.uuid&quot;</span></span><br><span class="line">	<span class="string">&quot;log&quot;</span></span><br><span class="line">	<span class="string">&quot;net/http&quot;</span></span><br><span class="line">	<span class="string">&quot;os&quot;</span></span><br><span class="line">	<span class="string">&quot;os/signal&quot;</span></span><br><span class="line">	<span class="string">&quot;strconv&quot;</span></span><br><span class="line">	<span class="string">&quot;syscall&quot;</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> logger log.Logger</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	serviceHost := <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">	servicePort := <span class="number">9999</span></span><br><span class="line">	serviceName := <span class="string">&quot;SayHello&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	consulHost := <span class="string">&quot;127.0.0.1&quot;</span></span><br><span class="line">	consulPort := <span class="number">8500</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	ctx := context.Background()</span><br><span class="line">	errChan := <span class="built_in">make</span>(<span class="keyword">chan</span> error)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">var</span> discoverClient discovery.DiscoverClient</span><br><span class="line">	discoverClient, err := discovery.NewKitDiscoverClient(consulHost, consulPort)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		log.Println(<span class="string">&quot;Get Consul Client failed&quot;</span>)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	svc := service.NewDiscoveryServiceImpl(discoverClient)</span><br><span class="line"></span><br><span class="line">	sayHelloEndpoint := endpoint.MakeSayHelloEndpoint(svc)</span><br><span class="line">	discoverEndpoint := endpoint.MakeDiscoveryEndpoint(svc)</span><br><span class="line">	healthCheckEndpoint := endpoint.MakeHealthCheckEndpoint(svc)</span><br><span class="line"></span><br><span class="line">	endpoints := endpoint.DiscoveryEndpoints&#123;</span><br><span class="line">		SayHelloEndpoint:    sayHelloEndpoint,</span><br><span class="line">		DiscoveryEndpoint:   discoverEndpoint,</span><br><span class="line">		HealthCheckEndpoint: healthCheckEndpoint,</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	router := transport.MakeHttpHandler(ctx, endpoints, config.KitLogger)</span><br><span class="line"></span><br><span class="line">	instanceId := serviceName + <span class="string">&quot;-&quot;</span> + uuid.NewV4().String()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		config.Logger.Println(<span class="string">&quot;Http Server start at port:&quot;</span> + strconv.Itoa(servicePort))</span><br><span class="line">		<span class="keyword">if</span> !discoverClient.Register(serviceName, instanceId, <span class="string">&quot;/health&quot;</span>,</span><br><span class="line">			serviceHost, servicePort, <span class="literal">nil</span>, config.Logger) &#123;</span><br><span class="line">			config.Logger.Printf(<span class="string">&quot;string-service for service %s failed.&quot;</span>, serviceName)</span><br><span class="line">			<span class="comment">// 注册失败，服务启动失败</span></span><br><span class="line">			os.Exit(<span class="number">-1</span>)</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">		handler := router</span><br><span class="line">		errChan &lt;- http.ListenAndServe(<span class="string">&quot;:&quot;</span>+strconv.Itoa(servicePort), handler)</span><br><span class="line"></span><br><span class="line">	&#125;()</span><br><span class="line"></span><br><span class="line">	<span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">		<span class="comment">// 监控系统信号，等待 ctrl + c 系统信号通知服务关闭</span></span><br><span class="line">		c := <span class="built_in">make</span>(<span class="keyword">chan</span> os.Signal, <span class="number">1</span>)</span><br><span class="line">		signal.Notify(c, syscall.SIGINT, syscall.SIGTERM)</span><br><span class="line">		errChan &lt;- fmt.Errorf(<span class="string">&quot;%s&quot;</span>, &lt;-c)</span><br><span class="line">    &#125;()</span><br><span class="line"></span><br><span class="line">    err = &lt;-errChan</span><br><span class="line"></span><br><span class="line">	<span class="comment">//服务退出取消注册</span></span><br><span class="line">	discoverClient.DeRegister(instanceId, config.Logger)</span><br><span class="line">	config.Logger.Println(err)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>参考文章:<br><a href="">Go语言高并发与微服务实战</a></p>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    <!-- 
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/" title="go-kit中使用consul服务注册与发现、健康检测" target="_blank" rel="external">https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/</a>
+    </li>
+     -->
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/dream-kzx" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/dream-kzx" target="_blank"><span class="text-dark">仰望的人</span><small class="ml-1x">愿你一生努力，永远被爱</small></a></h3>
+        <div>技术分享,后端开发,C++,Golang。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
+  
+    
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
+    
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2020/12/06/go-kit-etcdv3%E5%BA%93%E5%AD%A6%E4%B9%A0/" title="go-kit/etcdv3库学习"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+    <li class="toggle-toc">
+      <a class="toggle-btn collapsed" data-toggle="collapse" href="#collapseToc" aria-expanded="false" title="文章目录" role="button">
+        <span>[&nbsp;</span><span>文章目录</span>
+        <i class="text-collapsed icon icon-anchor"></i>
+        <i class="text-in icon icon-close"></i>
+        <span>]</span>
+      </a>
+    </li>
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/Alipay.jpg" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="https://cdn.jsdelivr.net/gh/dream-kzx/blog_image/img/wechat.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+</main>
+
+  <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
+	
+	
+    <ul class="social-links">
+    	
+        <li><a href="https://github.com/dream-kzx" target="_blank" title="Github" data-toggle=tooltip data-placement=top><i class="icon icon-github"></i></a></li>
+        
+    </ul>
+
+    <div class="copyright">
+    	
+        <!-- <div class="publishby">
+        	Theme by <a href="https://github.com/cofess" target="_blank"> cofess </a>base on <a href="https://github.com/cofess/hexo-theme-pure" target="_blank">pure</a>.
+        </div> -->
+    </div>
+</footer>
+  <script src="//cdn.jsdelivr.net/npm/jquery@1.12.4/dist/jquery.min.js"></script>
+<script>
+window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
+</script>
+
+<script src="/js/plugin.min.js"></script>
+
+
+<script src="/js/application.js"></script>
+
+
+    <script>
+(function (window) {
+    var INSIGHT_CONFIG = {
+        TRANSLATION: {
+            POSTS: '文章',
+            PAGES: '页面',
+            CATEGORIES: '分类',
+            TAGS: '标签',
+            UNTITLED: '(未命名)',
+        },
+        ROOT_URL: '/',
+        CONTENT_URL: '/content.json',
+    };
+    window.INSIGHT_CONFIG = INSIGHT_CONFIG;
+})(window);
+</script>
+
+<script src="/js/insight.js"></script>
+
+
+
+
+
+
+   
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: 'G4bx8emv5lMlJv3aYUD9IN1T-gzGzoHsz',
+    appKey: 'YDOIz7VT0BlhXVPP1nu0ie2X',
+    placeholder: '留下您的高见！',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
+
+
+
+
+
+
+
+</body>
+</html>
