@@ -2,9 +2,44 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://lookupman.cn/about/index.html</loc>
+    
+    <lastmod>2021-08-03</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/tags/index.html</loc>
+    
+    <lastmod>2021-08-03</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/categories/index.html</loc>
+    
+    <lastmod>2021-08-03</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/links/index.html</loc>
+    
+    <lastmod>2021-08-03</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://lookupman.cn/2021/01/03/go-kit%E4%B8%AD%E4%BD%BF%E7%94%A8consul%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8F%91%E7%8E%B0%E3%80%81%E5%81%A5%E5%BA%B7%E6%A3%80%E6%B5%8B/</loc>
     
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://lookupman.cn/2021/02/25/go%E8%BF%9B%E9%98%B6%E8%AE%AD%E7%BB%83%E8%90%A5%E7%AC%AC1%E5%91%A8/</loc>
+    
+    <lastmod>2021-02-25</lastmod>
     
   </url>
   
@@ -51,35 +86,7 @@
   </url>
   
   <url>
-    <loc>https://lookupman.cn/about/index.html</loc>
-    
-    <lastmod>2020-11-08</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://lookupman.cn/links/index.html</loc>
-    
-    <lastmod>2020-11-08</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://lookupman.cn/tags/index.html</loc>
-    
-    <lastmod>2020-11-08</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>https://lookupman.cn/repository/index.html</loc>
-    
-    <lastmod>2020-11-08</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>https://lookupman.cn/categories/index.html</loc>
     
     <lastmod>2020-11-08</lastmod>
     
@@ -207,7 +214,7 @@
 
   <url>
     <loc>https://lookupman.cn/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -215,21 +222,21 @@
   
   <url>
     <loc>https://lookupman.cn/tags/C/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/tags/%E5%8C%85%E7%AE%A1%E7%90%86%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/tags/%E6%88%90%E9%95%BF/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -238,28 +245,28 @@
   
   <url>
     <loc>https://lookupman.cn/categories/C/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/%E7%94%9F%E6%B4%BB/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/Nginx/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://lookupman.cn/categories/Golang/</loc>
-    <lastmod>2021-01-03</lastmod>
+    <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
