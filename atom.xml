@@ -6,7 +6,7 @@
   <link href="https://lookupman.cn/atom.xml" rel="self"/>
   
   <link href="https://lookupman.cn/"/>
-  <updated>2021-02-25T13:44:56.233Z</updated>
+  <updated>2021-08-03T12:13:34.182Z</updated>
   <id>https://lookupman.cn/</id>
   
   <author>
@@ -15,23 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>go进阶训练营第1周</title>
-    <link href="https://lookupman.cn/2021/02/25/go%E8%BF%9B%E9%98%B6%E8%AE%AD%E7%BB%83%E8%90%A5%E7%AC%AC1%E5%91%A8/"/>
-    <id>https://lookupman.cn/2021/02/25/go%E8%BF%9B%E9%98%B6%E8%AE%AD%E7%BB%83%E8%90%A5%E7%AC%AC1%E5%91%A8/</id>
-    <published>2021-02-25T13:44:36.000Z</published>
-    <updated>2021-02-25T13:44:56.233Z</updated>
-    
-    <content type="html"><![CDATA[<p>首页显示摘要内容（替换成自己的）</p><a id="more"></a><h1 id=""><a href="#" class="headerlink" title=""></a></h1><p>参考文章:<br><a href="">参考链接</a></p>]]></content>
-    
-    
-    <summary type="html">&lt;p&gt;首页显示摘要内容（替换成自己的）&lt;/p&gt;</summary>
-    
-    
-    
-    
-  </entry>
   
   <entry>
     <title>go-kit中使用consul服务注册与发现、健康检测</title>
